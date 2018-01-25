@@ -11,22 +11,10 @@ pipeline {
 			}
 		}
 		
-		stage("Testing") {	
-			 def steps = [:]
-							
-					steps {
-						 echo 'Unit Tests Are Awesome!'
-					}
-								
-					steps {
-						sh 'Integration Tests Are Awesome!'
-					}
-				
-					steps {
-						sh 'Where There is Smoke there is Fire!!!'
-					}
-				 parallel steps
-			
+		stage("Testing") {							
+			steps {
+			 echo 'Unit Tests Are Awesome!'
+			}
 		}
 		
 		stage("Deploy") {
