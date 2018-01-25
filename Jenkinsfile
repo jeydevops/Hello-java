@@ -7,7 +7,7 @@ pipeline {
 				echo '---Build started----!'
 				git 'https://github.com/jeydevops/Hello-java.git'
 				sh 'mvn clean package -DskipTests=true'
-				sh 'logstashSend'
+				logstashSend failBuild: true, maxLines: 1000
 			}
 		}
 		
@@ -21,11 +21,7 @@ pipeline {
 			steps {
 				echo "Deploy!"
 			}
-		}
-		
-	post
-		{
-		  logstashSend failBuild: true, maxLines: 1000
-		}
+		}	
+	
 	}
 }
