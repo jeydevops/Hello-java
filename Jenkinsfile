@@ -11,24 +11,21 @@ pipeline {
 			}
 		}
 		
-		stage("Testing") {
-			parallel {
-				stage("Unit Tests") {					
+		stage("Testing") {			
+							
 					steps {
 						 echo 'Unit Tests Are Awesome!'
 					}
-				}
-				stage("Integration Tests") {					
+								
 					steps {
 						sh 'Integration Tests Are Awesome!'
 					}
-				}
-				stage("Smoke Tests") {
+				
 					steps {
 						sh 'Where There is Smoke there is Fire!!!'
 					}
-				}
-			}
+				 parallel steps
+			
 		}
 		
 		stage("Deploy") {
