@@ -10,7 +10,6 @@ pipeline {
       }
     }
     stage('Test') {
-      parallel {
         stage('Unit Tests') {
           steps {
             echo 'Unit Tests Are Awesome!'
@@ -30,8 +29,7 @@ pipeline {
           steps {
             echo 'Reg Test executed'
           }
-        }
-      }
+        }     
     }   
     stage('Deploy') {
       steps {
