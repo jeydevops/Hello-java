@@ -22,5 +22,10 @@ pipeline {
 				echo "Deploy!"
 			}
 		}
+		
+	post
+		{
+		  logstashSend failBuild: true, maxLines: 1000
+		}
 	}
 }
