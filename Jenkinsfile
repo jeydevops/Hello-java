@@ -7,7 +7,7 @@ pipeline {
 				echo '---Build started----!'
 				git 'https://github.com/jeydevops/Hello-java.git'
 				sh 'mvn clean package -DskipTests=true'
-				logstashSend failBuild: true, maxLines: 1000
+				//logstashSend failBuild: true, maxLines: 1000
 			}
 		}
 		
@@ -21,7 +21,14 @@ pipeline {
 			steps {
 				echo "Deploy!"
 			}
-		}	
+		}
+		
+		stage("Send ConsoleLog to Logstash") {
+			steps {
+				echo '---Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: 1000
+			}
+		}
 	
 	}
 }
