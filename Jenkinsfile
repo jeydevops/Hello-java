@@ -6,10 +6,11 @@ pipeline {
         echo '---Build started----!'
         git 'https://github.com/jeydevops/Hello-java.git'
         sh 'mvn clean package -DskipTests=true'
-        logstashSend 'failBuild: true, maxLines: 1000'
+       // logstashSend 'failBuild: true, maxLines: 1000'
       }
     }
     stage('Test') {
+      parallel {
         stage('Unit Tests') {
           steps {
             echo 'Unit Tests Are Awesome!'
@@ -29,7 +30,8 @@ pipeline {
           steps {
             echo 'Reg Test executed'
           }
-        }     
+        }
+      }
     }   
     stage('Deploy') {
       steps {
