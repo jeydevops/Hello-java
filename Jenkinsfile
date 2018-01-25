@@ -11,7 +11,8 @@ pipeline {
 			}
 		}
 		
-		stage("Testing") {			
+		stage("Testing") {	
+			 def steps = [:]
 							
 					steps {
 						 echo 'Unit Tests Are Awesome!'
