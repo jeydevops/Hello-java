@@ -25,10 +25,10 @@ pipeline {
 	}
 		
 		post{
-		   always {
-				echo '---ALWAYS: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-			}
+		  // always {
+		//		echo '---ALWAYS: Archive jenkins Console Logs to Elasticsearch----!'				
+		//		logstashSend failBuild: true, maxLines: -1
+		//	}
 		  failure {
             			echo '---FAILURE: Archive jenkins Console Logs to Elasticsearch----!'				
 				logstashSend failBuild: true, maxLines: -1
