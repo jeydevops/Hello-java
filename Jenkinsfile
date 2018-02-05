@@ -23,12 +23,10 @@ pipeline {
 			}
 		}
 		
-		stage("Send ConsoleLog to Logstash") {
-			steps {
+		post{
+		   always {
 				echo '---Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: 1000
+				logstashSend failBuild: true, maxLines: -1
 			}
-		}
-	
-	}
+		    }	
 }
