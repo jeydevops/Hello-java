@@ -2,7 +2,9 @@ pipeline {
 	agent any
 	
 	stages {
-		stage("Build") {			
+		stage("Build") {
+			steps{
+			script {
 			try
 			{
 			
@@ -20,6 +22,8 @@ pipeline {
 			finally {
     			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
 				logstashSend failBuild: true, maxLines: -1
+			}
+			}
 			}
 			
 		}
