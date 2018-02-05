@@ -30,15 +30,44 @@ pipeline {
 		
 		stage("Testing") {							
 			steps {
+				script {
+			try
+			{
 			 echo 'Unit Tests Are Awesome!'
 			}
+					catch(err){
+				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+				throw(err)
+				
+			}
+			finally {
+    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+			}
+			}
+			}					
 		}
 		
 		stage("Deploy") {
 			steps {
+				script {
+			try
+			{
 				echo "Deploy!"
 			}
-		}
+		catch(err){
+				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+				throw(err)
+				
+			}
+			finally {
+    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+			}
+			}
+			}
 	}
 		
 		post{
@@ -46,9 +75,23 @@ pipeline {
 		//		echo '---ALWAYS: Archive jenkins Console Logs to Elasticsearch----!'				
 		//		logstashSend failBuild: true, maxLines: -1
 		//	}
+		script {
+		try
+		  {
 		  failure {
             			echo '---FAILURE: Archive jenkins Console Logs to Elasticsearch----!'				
 				logstashSend failBuild: true, maxLines: -1
         		}
-		    }	
+			catch(err){
+				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+				throw(err)
+				
+			}
+			finally {
+    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
+				logstashSend failBuild: true, maxLines: -1
+			}
+			}
+			}		  
 }
