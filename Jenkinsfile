@@ -4,9 +4,9 @@ pipeline {
 	stages {
 		stage("Build") {
 			steps {
-				echo '---Build started----!'
+				eho '---Build started----!'
 				git 'https://github.com/jeydevops/Hello-java.git'
-				sh 'mvn clean pakage -DskipTests=true'
+				sh 'mvn clean package -DskipTests=true'
 				//logstashSend failBuild: true, maxLines: 1000
 			}
 		}
