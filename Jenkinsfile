@@ -75,13 +75,14 @@ pipeline {
 		//		echo '---ALWAYS: Archive jenkins Console Logs to Elasticsearch----!'				
 		//		logstashSend failBuild: true, maxLines: -1
 		//	}
-		script {
-		try
-		  {
+		
 		  failure {
+			  script {
+				try
+		  		{
             			echo '---FAILURE: Archive jenkins Console Logs to Elasticsearch----!'				
 				logstashSend failBuild: true, maxLines: -1
-        		}
+        			}
 			catch(err){
 				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
 				logstashSend failBuild: true, maxLines: -1
