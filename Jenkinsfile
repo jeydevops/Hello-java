@@ -1,100 +1,32 @@
-pipeline {
-	agent any
-	
-	stages {
-		stage("Build") {
-			steps{
-			script {
-			try
-			{
-			
-				eho '---Build started----!'
-				//git 'https://github.com/jeydevops/Hello-java.git'
-				sh 'mvn clean package -DskipTests=true'
-				//logstashSend failBuild: true, maxLines: 1000			
-			}
-			catch(err){
-				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-				throw(err)
-				
-			}
-			finally {
-    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-			}
-			}
-			}
-			
-		}
-		
-		stage("Testing") {							
-			steps {
-				script {
-			try
-			{
-			 echo 'Unit Tests Are Awesome!'
-			}
-					catch(err){
-				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-				throw(err)
-				
-			}
-			finally {
-    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-			}
-			}
-			}					
-		}
-		
-		stage("Deploy") {
-			steps {
-				script {
-			try
-			{
-				echo "Deploy!"
-			}
-		catch(err){
-				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-				throw(err)
-				
-			}
-			finally {
-    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-			}
-			}
-			}
-		}
-	}
-		
-		post{
-		  // always {
-		//		echo '---ALWAYS: Archive jenkins Console Logs to Elasticsearch----!'				
-		//		logstashSend failBuild: true, maxLines: -1
-		//	}
-		
-		  failure {
-			  script {
-				try
-		  		{
-            			echo '---FAILURE: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-        			}
-			catch(err){
-				echo '---FAILURE CATCH: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-				throw(err)
-				
-			}
-			finally {
-    			echo '---FAILURE FINALLY: Archive jenkins Console Logs to Elasticsearch----!'				
-				logstashSend failBuild: true, maxLines: -1
-			}
-			}
-			}
-		}	
+node {
+   // Mark the code checkout 'stage'....
+   stage 'Checkout'
+   checkout scm
+
+   sh "sudo chown jenkins /var/run/docker.sock"
+   sh "sudo chown jenkins /usr/bin/docker"
+
+   stage 'Build application'
+   def mvnHome = tool 'M3'
+   sh "${mvnHome}/bin/mvn clean package"
+  
+   stage 'Build Docker image'
+   def image = docker.build('jenkins-hello-java:${BUILD_TAG}', '.')
+
+   stage 'Acceptance Tests'
+   image.withRun('-p 9191:9090') {c ->
+        sh "${mvnHome}/bin/mvn verify"
+   }
+  
+   stage 'Push image'
+   
+   docker.withRegistry('https://nexus-repo', 'nexus-admin') { 
+      /* def image = docker.build('jenkins-hello-java:latest', '.')  
+         image.withRun('-p 9191:9090') {c ->
+         sh "${mvnHome}/bin/mvn verify"
+            }*/
+        /* Push the container to the custom Registry */
+        image.push()
+    }
+  
 }
